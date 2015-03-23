@@ -1,5 +1,6 @@
-_flashLED: CODE, 24 0 52
-_main: CODE, 76 0 32
+_flashLED: CODE, 24 0 56
+_main: CODE, 125 0 16
 __initialization: CODE, 19 0 2
-_handleButtonPress: CODE, 108 0 18
-Total: 104
+_handleButtonPress: CODE, 80 0 25
+_initialize: CODE, 105 0 20
+Total: 119

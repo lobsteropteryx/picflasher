@@ -24,7 +24,7 @@ volatile int keyPressed = 0;
 void __interrupt handleButtonPress(void) {
     int portA;
     if (INTCONbits.RAIF == 1) { // Interrupt bit set
-//        portA = PORTA;
+        portA = PORTA; // Read PORTA to reset the pin check
         INTCONbits.RAIF = 0; // Clear it
         keyPressed = 1; // Set our flag and get out of here
     }
@@ -40,14 +40,12 @@ void flashLED(void) {
     }
 }
 
-int main(int argc, char** argv) {
-
-    /* Set Analog pins to digital i/o */
-    CMCON0 = 0b00000100;
-    ANSEL = 0b00000000;
+void initialize(void) {
+    CMCON0 = 0b00000100; /* Disable the comparator */
+    ANSEL = 0b00000000; /* Disable A/D converter functions */
 
     OPTION_REG = 0b00000000; /* Enable PORTA pullups */
-    TRISA = 0b11111111; /* Set input / output for PORTA */
+    TRISA = 0b11111111; /* Set I/O for PORTA */
     WPUA5 = 1; /* Enable internal pullup for A5 */
     IOCA5 = 1; /* Enable interrupt on change for A5 */
 
@@ -55,9 +53,15 @@ int main(int argc, char** argv) {
     TRISC = 0b11111011;
 
     /* Enable Interrupts*/
-    INTCONbits.GIE = 1;
-    INTCONbits.RAIE = 1;
-    RC2 = 0; /* Turn LED off */
+    INTCONbits.GIE = 1;  /* Global interrupt */
+    INTCONbits.RAIE = 1; /* Interrupt on change for PORTA */
+
+    /* Turn LED off */
+    RC2 = 0;
+}
+
+int main(int argc, char** argv) {
+    initialize();
     while (1) {
         SLEEP();
         if (keyPressed) {
@@ -65,7 +69,6 @@ int main(int argc, char** argv) {
             flashLED();
         }
     }
-
     return (EXIT_SUCCESS);
 }
 

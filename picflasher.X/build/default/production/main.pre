@@ -1315,7 +1315,7 @@ volatile int keyPressed = 0;
 void __interrupt handleButtonPress(void) {
 int portA;
 if (INTCONbits.RAIF == 1) {
-
+portA = PORTA;
 INTCONbits.RAIF = 0;
 keyPressed = 1;
 }
@@ -1331,9 +1331,7 @@ _delay((unsigned long)((100)*(8000000/4000.0)));
 }
 }
 
-int main(int argc, char** argv) {
-
-
+void initialize(void) {
 CMCON0 = 0b00000100;
 ANSEL = 0b00000000;
 
@@ -1348,7 +1346,13 @@ TRISC = 0b11111011;
 
 INTCONbits.GIE = 1;
 INTCONbits.RAIE = 1;
+
+
 RC2 = 0;
+}
+
+int main(int argc, char** argv) {
+initialize();
 while (1) {
 asm("sleep");
 if (keyPressed) {
@@ -1356,7 +1360,6 @@ keyPressed = 0;
 flashLED();
 }
 }
-
 return (0);
 }
 
