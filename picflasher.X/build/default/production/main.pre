@@ -1309,20 +1309,52 @@ extern __nonreentrant void _delay(unsigned long);
 
 
 
+volatile int keyPressed = 0;
+
+# 24
+void __interrupt handleButtonPress(void) {
+int portA;
+if (INTCONbits.RAIF == 1) {
+
+INTCONbits.RAIF = 0;
+keyPressed = 1;
+}
+}
+
+void flashLED(void) {
+int i;
+for (i = 0; i < 3; i++) {
+RC2 = 1;
+_delay((unsigned long)((100)*(8000000/4000.0)));
+RC2 = 0;
+_delay((unsigned long)((100)*(8000000/4000.0)));
+}
+}
+
 int main(int argc, char** argv) {
 
 
 CMCON0 = 0b00000100;
 ANSEL = 0b00000000;
 
+OPTION_REG = 0b00000000;
+TRISA = 0b11111111;
+WPUA5 = 1;
+IOCA5 = 1;
+
 
 TRISC = 0b11111011;
 
-while (1) {
-RC2 = 1;
-_delay((unsigned long)((500)*(8000000/4000.0)));
+
+INTCONbits.GIE = 1;
+INTCONbits.RAIE = 1;
 RC2 = 0;
-_delay((unsigned long)((500)*(8000000/4000.0)));
+while (1) {
+asm("sleep");
+if (keyPressed) {
+keyPressed = 0;
+flashLED();
+}
 }
 
 return (0);

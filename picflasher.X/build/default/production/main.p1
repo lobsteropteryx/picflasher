@@ -1,17 +1,36 @@
 Version 3.2 HI-TECH Software Intermediate Code
-[p mainexit ]
-"771 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic16f688.h
-[v _CMCON0 `Vuc ~T0 @X0 0 e@25 ]
-"1357
-[v _ANSEL `Vuc ~T0 @X0 0 e@145 ]
-"1078
-[v _TRISC `Vuc ~T0 @X0 0 e@135 ]
+"281 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic16f688.h
+[s S18 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 :1 `uc 1 ]
+[n S18 . RAIF INTF T0IF RAIE INTE T0IE PEIE GIE ]
+"291
+[s S19 :2 `uc 1 :1 `uc 1 :2 `uc 1 :1 `uc 1 ]
+[n S19 . . TMR0IF . TMR0IE ]
+"280
+[u S17 `S18 1 `S19 1 ]
+[n S17 . . . ]
+"298
+[v _INTCONbits `VS17 ~T0 @X0 0 e@11 ]
 "2137
 [v _RC2 `Vb ~T0 @X0 0 e@58 ]
 [v F1074 `(v ~T0 @X0 1 tf1`ul ]
 "154 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic.h
 [v __delay `JF1074 ~T0 @X0 0 e ]
 [p i __delay ]
+[p mainexit ]
+"771 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic16f688.h
+[v _CMCON0 `Vuc ~T0 @X0 0 e@25 ]
+"1357
+[v _ANSEL `Vuc ~T0 @X0 0 e@145 ]
+"960
+[v _OPTION_REG `Vuc ~T0 @X0 0 e@129 ]
+"1029
+[v _TRISA `Vuc ~T0 @X0 0 e@133 ]
+"2301
+[v _WPUA5 `Vb ~T0 @X0 0 e@1197 ]
+"2087
+[v _IOCA5 `Vb ~T0 @X0 0 e@1205 ]
+"1078
+[v _TRISC `Vuc ~T0 @X0 0 e@135 ]
 [; ;stdio.h: 8: typedef int ptrdiff_t;
 [; ;stdio.h: 9: typedef unsigned size_t;
 [; ;stdio.h: 10: typedef unsigned short wchar_t;
@@ -937,50 +956,152 @@ Version 3.2 HI-TECH Software Intermediate Code
 "15
 [p x MCLRE=OFF ]
 "20
+[v _keyPressed `Vi ~T0 @X0 1 e ]
+[i _keyPressed
+-> 0 `i
+]
+[; ;main.c: 20: volatile int keyPressed = 0;
+[v F1078 `(v ~T0 @X0 1 tf ]
+"24
+[v _handleButtonPress `IF1078 ~T0 @X0 1 e ]
+{
+[; ;main.c: 24: void __interrupt handleButtonPress(void) {
+[e :U _handleButtonPress ]
+[f ]
+"25
+[v _portA `i ~T0 @X0 1 a ]
+[; ;main.c: 25: int portA;
+[; ;main.c: 26: if (INTCONbits.RAIF == 1) {
+"26
+[e $ ! == -> . . _INTCONbits 0 0 `i -> 1 `i 93  ]
+{
+[; ;main.c: 28: INTCONbits.RAIF = 0;
+"28
+[e = . . _INTCONbits 0 0 -> -> 0 `i `uc ]
+[; ;main.c: 29: keyPressed = 1;
+"29
+[e = _keyPressed -> 1 `i ]
+"30
+}
+[e :U 93 ]
+[; ;main.c: 30: }
+[; ;main.c: 31: }
+"31
+[e :UE 92 ]
+}
+"33
+[v _flashLED `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 33: void flashLED(void) {
+[e :U _flashLED ]
+[f ]
+"34
+[v _i `i ~T0 @X0 1 a ]
+[; ;main.c: 34: int i;
+[; ;main.c: 35: for (i = 0; i < 3; i++) {
+"35
+{
+[e = _i -> 0 `i ]
+[e $ < _i -> 3 `i 95  ]
+[e $U 96  ]
+[e :U 95 ]
+{
+[; ;main.c: 36: RC2 = 1;
+"36
+[e = _RC2 -> -> 1 `i `b ]
+[; ;main.c: 37: _delay((unsigned long)((100)*(8000000/4000.0)));
+"37
+[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
+[; ;main.c: 38: RC2 = 0;
+"38
+[e = _RC2 -> -> 0 `i `b ]
+[; ;main.c: 39: _delay((unsigned long)((100)*(8000000/4000.0)));
+"39
+[e ( __delay (1 -> * -> -> 100 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
+"40
+}
+"35
+[e ++ _i -> 1 `i ]
+[e $ < _i -> 3 `i 95  ]
+[e :U 96 ]
+"40
+}
+[; ;main.c: 40: }
+[; ;main.c: 41: }
+"41
+[e :UE 94 ]
+}
+"43
 [v _main `(i ~T0 @X0 1 ef2`i`**uc ]
 {
-[; ;main.c: 20: int main(int argc, char** argv) {
+[; ;main.c: 43: int main(int argc, char** argv) {
 [e :U _main ]
 [v _argc `i ~T0 @X0 1 r1 ]
 [v _argv `**uc ~T0 @X0 1 r2 ]
 [f ]
-[; ;main.c: 23: CMCON0 = 0b00000100;
-"23
+[; ;main.c: 46: CMCON0 = 0b00000100;
+"46
 [e = _CMCON0 -> -> 4 `i `uc ]
-[; ;main.c: 24: ANSEL = 0b00000000;
-"24
+[; ;main.c: 47: ANSEL = 0b00000000;
+"47
 [e = _ANSEL -> -> 0 `i `uc ]
-[; ;main.c: 27: TRISC = 0b11111011;
-"27
+[; ;main.c: 49: OPTION_REG = 0b00000000;
+"49
+[e = _OPTION_REG -> -> 0 `i `uc ]
+[; ;main.c: 50: TRISA = 0b11111111;
+"50
+[e = _TRISA -> -> 255 `i `uc ]
+[; ;main.c: 51: WPUA5 = 1;
+"51
+[e = _WPUA5 -> -> 1 `i `b ]
+[; ;main.c: 52: IOCA5 = 1;
+"52
+[e = _IOCA5 -> -> 1 `i `b ]
+[; ;main.c: 55: TRISC = 0b11111011;
+"55
 [e = _TRISC -> -> 251 `i `uc ]
-[; ;main.c: 29: while (1) {
-"29
-[e :U 94 ]
-{
-[; ;main.c: 30: RC2 = 1;
-"30
-[e = _RC2 -> -> 1 `i `b ]
-[; ;main.c: 31: _delay((unsigned long)((500)*(8000000/4000.0)));
-"31
-[e ( __delay (1 -> * -> -> 500 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
-[; ;main.c: 32: RC2 = 0;
-"32
+[; ;main.c: 58: INTCONbits.GIE = 1;
+"58
+[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
+[; ;main.c: 59: INTCONbits.RAIE = 1;
+"59
+[e = . . _INTCONbits 0 3 -> -> 1 `i `uc ]
+[; ;main.c: 60: RC2 = 0;
+"60
 [e = _RC2 -> -> 0 `i `b ]
-[; ;main.c: 33: _delay((unsigned long)((500)*(8000000/4000.0)));
-"33
-[e ( __delay (1 -> * -> -> 500 `i `d / -> -> 8000000 `l `d .4000.0 `ul ]
-"34
+[; ;main.c: 61: while (1) {
+"61
+[e :U 100 ]
+{
+[; ;main.c: 62: asm("sleep");
+"62
+[; <" sleep ;# ">
+[; ;main.c: 63: if (keyPressed) {
+"63
+[e $ ! != _keyPressed -> 0 `i 102  ]
+{
+[; ;main.c: 64: keyPressed = 0;
+"64
+[e = _keyPressed -> 0 `i ]
+[; ;main.c: 65: flashLED();
+"65
+[e ( _flashLED ..  ]
+"66
 }
-[e :U 93 ]
-"29
-[e $U 94  ]
-[e :U 95 ]
-[; ;main.c: 34: }
-[; ;main.c: 36: return (0);
-"36
+[e :U 102 ]
+"67
+}
+[e :U 99 ]
+"61
+[e $U 100  ]
+[e :U 101 ]
+[; ;main.c: 66: }
+[; ;main.c: 67: }
+[; ;main.c: 69: return (0);
+"69
 [e ) -> 0 `i ]
-[e $UE 92  ]
-[; ;main.c: 37: }
-"37
-[e :UE 92 ]
+[e $UE 98  ]
+[; ;main.c: 70: }
+"70
+[e :UE 98 ]
 }
