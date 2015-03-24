@@ -1,6 +1,11 @@
 _flashLED: CODE, 24 0 56
-_main: CODE, 125 0 16
+__stringtab: STRING, 155 0 6
+__stringdata: STRING, 161 0 14
+_putch: CODE, 205 0 8
+_main: CODE, 175 0 20
 __initialization: CODE, 19 0 2
-_handleButtonPress: CODE, 80 0 25
-_initialize: CODE, 105 0 20
-Total: 119
+_handleButtonPress: CODE, 108 0 25
+_printf: CODE, 80 0 28
+_initialize: CODE, 133 0 22
+_initialize_usart: CODE, 195 0 10
+Total: 191

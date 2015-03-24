@@ -40,6 +40,22 @@ void flashLED(void) {
     }
 }
 
+void putch(char data) {
+    while(!TXIF) {
+        continue; // Wait for buffer to empty
+    }
+    TXREG = data;
+}
+
+void initialize_usart(void) {
+    SPBRG = 51; // ~9600 baud @ 8MHz
+    TXEN = 1; // Enable transmit
+    BRGH = 1; // high speed transmit
+    BRG16 = 0; // 8-bit speed
+    SYNC = 0; // Set mode to async
+    SPEN = 1; // Enable serial port
+}
+
 void initialize(void) {
     CMCON0 = 0b00000100; /* Disable the comparator */
     ANSEL = 0b00000000; /* Disable A/D converter functions */
@@ -50,7 +66,7 @@ void initialize(void) {
     IOCA5 = 1; /* Enable interrupt on change for A5 */
 
     /* Set port RC2 to output */
-    TRISC = 0b11111011;
+    TRISC = 0b11101011;
 
     /* Enable Interrupts*/
     INTCONbits.GIE = 1;  /* Global interrupt */
@@ -58,6 +74,8 @@ void initialize(void) {
 
     /* Turn LED off */
     RC2 = 0;
+
+    initialize_usart();
 }
 
 int main(int argc, char** argv) {
@@ -67,6 +85,7 @@ int main(int argc, char** argv) {
         if (keyPressed) {
             keyPressed = 0;
             flashLED();
+            printf("button press\n");
         }
     }
     return (EXIT_SUCCESS);

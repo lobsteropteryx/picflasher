@@ -18,7 +18,23 @@ Version 3.2 HI-TECH Software Intermediate Code
 "154 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic.h
 [v __delay `JF1074 ~T0 @X0 0 e ]
 [p i __delay ]
-"771 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic16f688.h
+"2257 C:\Program Files (x86)\Microchip\xc8\v1.33\include\pic16f688.h
+[v _TXIF `Vb ~T0 @X0 0 e@97 ]
+"591
+[v _TXREG `Vuc ~T0 @X0 0 e@21 ]
+"579
+[v _SPBRG `Vuc ~T0 @X0 0 e@19 ]
+"2253
+[v _TXEN `Vb ~T0 @X0 0 e@181 ]
+"1999
+[v _BRGH `Vb ~T0 @X0 0 e@178 ]
+"1997
+[v _BRG16 `Vb ~T0 @X0 0 e@139 ]
+"2175
+[v _SYNC `Vb ~T0 @X0 0 e@180 ]
+"2169
+[v _SPEN `Vb ~T0 @X0 0 e@191 ]
+"771
 [v _CMCON0 `Vuc ~T0 @X0 0 e@25 ]
 "1357
 [v _ANSEL `Vuc ~T0 @X0 0 e@145 ]
@@ -33,6 +49,8 @@ Version 3.2 HI-TECH Software Intermediate Code
 "1078
 [v _TRISC `Vuc ~T0 @X0 0 e@135 ]
 [p mainexit ]
+"206 C:\Program Files (x86)\Microchip\xc8\v1.33\include\stdio.h
+[v _printf `(i ~T0 @X0 0 ev`*Cuc ]
 [; ;stdio.h: 8: typedef int ptrdiff_t;
 [; ;stdio.h: 9: typedef unsigned size_t;
 [; ;stdio.h: 10: typedef unsigned short wchar_t;
@@ -1037,89 +1055,155 @@ Version 3.2 HI-TECH Software Intermediate Code
 [e :UE 94 ]
 }
 "43
-[v _initialize `(v ~T0 @X0 1 ef ]
+[v _putch `(v ~T0 @X0 1 ef1`uc ]
 {
-[; ;main.c: 43: void initialize(void) {
-[e :U _initialize ]
+[; ;main.c: 43: void putch(char data) {
+[e :U _putch ]
+[v _data `uc ~T0 @X0 1 r1 ]
 [f ]
-[; ;main.c: 44: CMCON0 = 0b00000100;
+[; ;main.c: 44: while(!TXIF) {
 "44
-[e = _CMCON0 -> -> 4 `i `uc ]
-[; ;main.c: 45: ANSEL = 0b00000000;
+[e $U 99  ]
+[e :U 100 ]
+{
+[; ;main.c: 45: continue;
 "45
-[e = _ANSEL -> -> 0 `i `uc ]
-[; ;main.c: 47: OPTION_REG = 0b00000000;
+[e $U 99  ]
+"46
+}
+[e :U 99 ]
+"44
+[e $ ! _TXIF 100  ]
+[e :U 101 ]
+[; ;main.c: 46: }
+[; ;main.c: 47: TXREG = data;
 "47
-[e = _OPTION_REG -> -> 0 `i `uc ]
-[; ;main.c: 48: TRISA = 0b11111111;
+[e = _TXREG _data ]
+[; ;main.c: 48: }
 "48
-[e = _TRISA -> -> 255 `i `uc ]
-[; ;main.c: 49: WPUA5 = 1;
-"49
-[e = _WPUA5 -> -> 1 `i `b ]
-[; ;main.c: 50: IOCA5 = 1;
-"50
-[e = _IOCA5 -> -> 1 `i `b ]
-[; ;main.c: 53: TRISC = 0b11111011;
-"53
-[e = _TRISC -> -> 251 `i `uc ]
-[; ;main.c: 56: INTCONbits.GIE = 1;
-"56
-[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
-[; ;main.c: 57: INTCONbits.RAIE = 1;
-"57
-[e = . . _INTCONbits 0 3 -> -> 1 `i `uc ]
-[; ;main.c: 60: RC2 = 0;
-"60
-[e = _RC2 -> -> 0 `i `b ]
-[; ;main.c: 61: }
-"61
 [e :UE 98 ]
 }
+"50
+[v _initialize_usart `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 50: void initialize_usart(void) {
+[e :U _initialize_usart ]
+[f ]
+[; ;main.c: 51: SPBRG = 51;
+"51
+[e = _SPBRG -> -> 51 `i `uc ]
+[; ;main.c: 52: TXEN = 1;
+"52
+[e = _TXEN -> -> 1 `i `b ]
+[; ;main.c: 53: BRGH = 1;
+"53
+[e = _BRGH -> -> 1 `i `b ]
+[; ;main.c: 54: BRG16 = 0;
+"54
+[e = _BRG16 -> -> 0 `i `b ]
+[; ;main.c: 55: SYNC = 0;
+"55
+[e = _SYNC -> -> 0 `i `b ]
+[; ;main.c: 56: SPEN = 1;
+"56
+[e = _SPEN -> -> 1 `i `b ]
+[; ;main.c: 57: }
+"57
+[e :UE 102 ]
+}
+"59
+[v _initialize `(v ~T0 @X0 1 ef ]
+{
+[; ;main.c: 59: void initialize(void) {
+[e :U _initialize ]
+[f ]
+[; ;main.c: 60: CMCON0 = 0b00000100;
+"60
+[e = _CMCON0 -> -> 4 `i `uc ]
+[; ;main.c: 61: ANSEL = 0b00000000;
+"61
+[e = _ANSEL -> -> 0 `i `uc ]
+[; ;main.c: 63: OPTION_REG = 0b00000000;
 "63
+[e = _OPTION_REG -> -> 0 `i `uc ]
+[; ;main.c: 64: TRISA = 0b11111111;
+"64
+[e = _TRISA -> -> 255 `i `uc ]
+[; ;main.c: 65: WPUA5 = 1;
+"65
+[e = _WPUA5 -> -> 1 `i `b ]
+[; ;main.c: 66: IOCA5 = 1;
+"66
+[e = _IOCA5 -> -> 1 `i `b ]
+[; ;main.c: 69: TRISC = 0b11101011;
+"69
+[e = _TRISC -> -> 235 `i `uc ]
+[; ;main.c: 72: INTCONbits.GIE = 1;
+"72
+[e = . . _INTCONbits 0 7 -> -> 1 `i `uc ]
+[; ;main.c: 73: INTCONbits.RAIE = 1;
+"73
+[e = . . _INTCONbits 0 3 -> -> 1 `i `uc ]
+[; ;main.c: 76: RC2 = 0;
+"76
+[e = _RC2 -> -> 0 `i `b ]
+[; ;main.c: 78: initialize_usart();
+"78
+[e ( _initialize_usart ..  ]
+[; ;main.c: 79: }
+"79
+[e :UE 103 ]
+}
+"81
 [v _main `(i ~T0 @X0 1 ef2`i`**uc ]
 {
-[; ;main.c: 63: int main(int argc, char** argv) {
+[; ;main.c: 81: int main(int argc, char** argv) {
 [e :U _main ]
 [v _argc `i ~T0 @X0 1 r1 ]
 [v _argv `**uc ~T0 @X0 1 r2 ]
 [f ]
-[; ;main.c: 64: initialize();
-"64
+[; ;main.c: 82: initialize();
+"82
 [e ( _initialize ..  ]
-[; ;main.c: 65: while (1) {
-"65
-[e :U 101 ]
+[; ;main.c: 83: while (1) {
+"83
+[e :U 106 ]
 {
-[; ;main.c: 66: asm("sleep");
-"66
+[; ;main.c: 84: asm("sleep");
+"84
 [; <" sleep ;# ">
-[; ;main.c: 67: if (keyPressed) {
-"67
-[e $ ! != _keyPressed -> 0 `i 103  ]
+[; ;main.c: 85: if (keyPressed) {
+"85
+[e $ ! != _keyPressed -> 0 `i 108  ]
 {
-[; ;main.c: 68: keyPressed = 0;
-"68
+[; ;main.c: 86: keyPressed = 0;
+"86
 [e = _keyPressed -> 0 `i ]
-[; ;main.c: 69: flashLED();
-"69
+[; ;main.c: 87: flashLED();
+"87
 [e ( _flashLED ..  ]
-"70
+[; ;main.c: 88: printf("button press\n");
+"88
+[e ( _printf :s 1C ]
+"89
 }
-[e :U 103 ]
-"71
+[e :U 108 ]
+"90
 }
-[e :U 100 ]
-"65
-[e $U 101  ]
-[e :U 102 ]
-[; ;main.c: 70: }
-[; ;main.c: 71: }
-[; ;main.c: 72: return (0);
-"72
+[e :U 105 ]
+"83
+[e $U 106  ]
+[e :U 107 ]
+[; ;main.c: 89: }
+[; ;main.c: 90: }
+[; ;main.c: 91: return (0);
+"91
 [e ) -> 0 `i ]
-[e $UE 99  ]
-[; ;main.c: 73: }
-"73
-[e :UE 99 ]
+[e $UE 104  ]
+[; ;main.c: 92: }
+"92
+[e :UE 104 ]
 }
+[p f _printf 8388608 ]
+[a 1C 98 117 116 116 111 110 32 112 114 101 115 115 10 0 ]
+

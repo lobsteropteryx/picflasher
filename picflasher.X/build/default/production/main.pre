@@ -1331,6 +1331,22 @@ _delay((unsigned long)((100)*(8000000/4000.0)));
 }
 }
 
+void putch(char data) {
+while(!TXIF) {
+continue;
+}
+TXREG = data;
+}
+
+void initialize_usart(void) {
+SPBRG = 51;
+TXEN = 1;
+BRGH = 1;
+BRG16 = 0;
+SYNC = 0;
+SPEN = 1;
+}
+
 void initialize(void) {
 CMCON0 = 0b00000100;
 ANSEL = 0b00000000;
@@ -1341,7 +1357,7 @@ WPUA5 = 1;
 IOCA5 = 1;
 
 
-TRISC = 0b11111011;
+TRISC = 0b11101011;
 
 
 INTCONbits.GIE = 1;
@@ -1349,6 +1365,8 @@ INTCONbits.RAIE = 1;
 
 
 RC2 = 0;
+
+initialize_usart();
 }
 
 int main(int argc, char** argv) {
@@ -1358,6 +1376,7 @@ asm("sleep");
 if (keyPressed) {
 keyPressed = 0;
 flashLED();
+printf("button press\n");
 }
 }
 return (0);
