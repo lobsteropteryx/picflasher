@@ -1310,15 +1310,84 @@ extern __nonreentrant void _delay(unsigned long);
 
 
 volatile int keyPressed = 0;
+volatile int adcResult = 0;
 
-# 24
-void __interrupt handleButtonPress(void) {
+void handleButtonPress(void) {
 int portA;
-if (INTCONbits.RAIF == 1) {
 portA = PORTA;
-INTCONbits.RAIF = 0;
+RAIF = 0;
 keyPressed = 1;
 }
+
+void handleTempReading(void) {
+ADIF = 0;
+adcResult = 1;
+}
+
+void __interrupt handleInterrupt(void) {
+if (RAIF == 1) {
+handleButtonPress();
+}
+if (ADIF == 1) {
+handleTempReading();
+}
+}
+
+unsigned long getADCResult(void) {
+unsigned long value;
+value = (ADRESH << 8) | ADRESL;
+return value;
+}
+
+float adcResultToVoltage(unsigned long adcResult) {
+return (4723.0 / 1023.0 * adcResult);
+}
+
+float voltageToDegreesC(float mv) {
+return (mv - 500.0) / 10.0;
+}
+
+void putch(char data) {
+while(!TXIF) {
+continue;
+}
+TXREG = data;
+}
+
+void printADCResult(void) {
+unsigned long adcResult;
+char adcString[4];
+adcResult = getADCResult();
+ultoa(adcString, adcResult, 10);
+printf("ADC: %s\r\n", adcString);
+}
+
+printVoltage(void) {
+unsigned long adcResult;
+float voltage;
+char * voltageString;
+int status;
+adcResult = getADCResult();
+voltage = adcResultToVoltage(adcResult);
+voltageString = ftoa(voltage, &status);
+printf("Voltage: %s mv\r\n", voltageString);
+}
+
+printTemperature(void) {
+unsigned long adcResult;
+float voltage, temp;
+char * tempString;
+int status;
+adcResult = getADCResult();
+voltage = adcResultToVoltage(adcResult);
+temp = voltageToDegreesC(voltage);
+tempString = ftoa(temp, &status);
+printf("Temp: %s C\r\n", tempString);
+}
+
+void startADC(void) {
+_delay((unsigned long)((5)*(8000000/4000000.0)));
+ADCON0bits.GO_DONE = 1;
 }
 
 void flashLED(void) {
@@ -1331,13 +1400,6 @@ _delay((unsigned long)((100)*(8000000/4000.0)));
 }
 }
 
-void putch(char data) {
-while(!TXIF) {
-continue;
-}
-TXREG = data;
-}
-
 void initialize_usart(void) {
 SPBRG = 51;
 TXEN = 1;
@@ -1345,38 +1407,68 @@ BRGH = 1;
 BRG16 = 0;
 SYNC = 0;
 SPEN = 1;
+
+}
+
+void initialize_temp_sensor(void) {
+TRISCbits.TRISC3 = 1;
+ANSELbits.ANS7 = 1;
+ADCON0bits.CHS0 = 1;
+ADCON0bits.CHS1 = 1;
+ADCON0bits.CHS2 = 1;
+ADCON0bits.ADFM = 1;
+ADCON0bits.VCFG = 0;
+ADCON0bits.ADON = 1;
+ADCON1 = 0;
+ADIF = 0;
+ADIE = 1;
+}
+
+void initialize_led(void) {
+TRISCbits.TRISC2 = 0;
+RC2 = 0;
+}
+
+void initialize_pushbutton(void) {
+TRISCbits.TRISC5 = 0;
+WPUA5 = 1;
+IOCA5 = 1;
+RAIE = 1;
 }
 
 void initialize(void) {
+OSCCON = 0b11111111;
 CMCON0 = 0b00000100;
 ANSEL = 0b00000000;
-
 OPTION_REG = 0b00000000;
 TRISA = 0b11111111;
-WPUA5 = 1;
-IOCA5 = 1;
+TRISC = 0b11111111;
 
-
-TRISC = 0b11101011;
-
-
-INTCONbits.GIE = 1;
-INTCONbits.RAIE = 1;
-
-
-RC2 = 0;
-
+initialize_led();
+initialize_pushbutton();
 initialize_usart();
+initialize_temp_sensor();
+
+
+PEIE = 1;
+GIE = 1;
 }
 
 int main(int argc, char** argv) {
 initialize();
+startADC();
 while (1) {
-asm("sleep");
+
 if (keyPressed) {
 keyPressed = 0;
 flashLED();
 printf("button press\n");
+}
+if (adcResult) {
+adcResult = 0;
+flashLED();
+printTemperature();
+startADC();
 }
 }
 return (0);
