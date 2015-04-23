@@ -15,7 +15,7 @@ The code and schematics here are a demonstration of some of the built-in periphe
 - LED
 
 #Schematic
-![schematic](picflasher.schematic.svg)
+![schematic](https://github.com/lobsteropteryx/picflasher/blob/master/picflasher.schematic.svg)
 
 #ToDo:
 - Refactor code into separate modules
