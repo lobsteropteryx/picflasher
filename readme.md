@@ -17,6 +17,7 @@ For now, everything is in [main.c](https://github.com/lobsteropteryx/picflasher/
 - [HC-06](http://abc-rc.pl/templates/images/files/995/1425483439-hc-06-datasheet.pdf)
 - 330 ohm resistor
 - LED
+- Momentary pushbutton
 - Microchip [PICkit2](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130) programmer
 
 When using the PICkit, the circuit can be powered from the programmer itself; once the chip has been programmed, the programmer can be replaced by a standard 5v power supply.  Note that the schematic does not include the isolation circuit for the programmer, so disconnect any external power before flashing the chip.
