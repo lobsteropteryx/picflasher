@@ -23,7 +23,7 @@ For now, everything is in [main.c](https://github.com/lobsteropteryx/picflasher/
 When using the PICkit, the circuit can be powered from the programmer itself; once the chip has been programmed, the programmer can be replaced by a standard 5v power supply.  Note that the schematic does not include the isolation circuit for the programmer, so disconnect any external power before flashing the chip.
 
 #Schematic
-![schematic](https://github.com/lobsteropteryx/picflasher/blob/master/picflasher.schematic.svg)
+![schematic](https://cdn.rawgit.com/lobsteropteryx/picflasher/master/picflasher.schematic.svg)
 
 #ToDo:
 - Refactor code into separate modules
